@@ -1,35 +1,43 @@
 const express = require('express');
-const Device = require('../models/device.model')
-const HttpStatusCode = require('http-status-codes')
+const HttpStatusCodes = require('http-status-codes');
+const Device = require('../models/device.model');
+
 const route = express.Router();
 
 route.get('/devices/:id', (req, res, next) => {
-    res.send(Device.getById(req.param.id));
+  Device.getById(req.params.id)
+    .then((registro) => {
+      res.send(registro);
+    })
 });
 
 route.get('/devices', (req, res, next) => {
-    res.send(Device.getAll());
+  Device.getAll()
+    .then((lista) => {
+      res.send(lista);
+    });
 });
 
 route.post('/devices', (req, res, next) => {
-    Device.create(req.body);
-    res.sendStatus(HttpStatusCode.CREATED);
+  Device.create(req.body)
+    .then(() => {
+      res.sendStatus(HttpStatusCodes.CREATED);
+    });
 });
 
 route.put('/devices/:id', (req, res, next) => {
-    if(!Device.getById(req.params.id)){
-        res.sendStatus(HttpStatusCode.NOT_FOUND);
-    }else{
-        req.body.id= req.params.id;
-        Device.update(req.body);
-        res.sendStatus(HttpStatusCode.OK);
-    }
+  req.body._id = req.params.id;
+  Device.update(req.body)
+    .then(() => {
+      res.sendStatus(HttpStatusCodes.OK);
+    });
 });
 
 route.delete('/devices/:id', (req, res, next) => {
-        Device.delete(req.params.id);
-        res.sendStatus(HttpStatusCode.OK);
+  Device.delete(req.params.id)
+    .then(() => {
+      res.sendStatus(HttpStatusCodes.OK);
+    });
 });
-
 
 module.exports = route;

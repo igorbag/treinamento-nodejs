@@ -1,34 +1,31 @@
-const DeviceType = require('./device-type.enum');
-let deviceIndexDb = 1;
-const devicesDb = {};
+const mongoose = require('mongoose');
+const deviceSchema = new mongoose.Schema({}, { strict: false });
+const DeviceModel = mongoose.model('Device', deviceSchema, 'devices');
 
 class Device {
-    constructor() {
-        this.id = null,
-        this.name= '',
-        this.type = DeviceType.LAMP;
-    }
 
-    static create(device){
-        device.id = deviceIndexDb++;
-        devicesDb[device.id] = device;
-    }
+  static create(device) {
+    return DeviceModel.create(device);
+  }
 
-    static getById(id){
-        return devicesDb[id];
-    }
-    
-    static update(device){
-        return devicesDb[device.id] = device;
-    }
+  static getById(id) {
+    return DeviceModel.findOne({
+      _id: id
+    });
+  }
 
-    static delete(id){
-        return delete devicesDb[id];
-    }
+  static update(device) {
+    return DeviceModel.update({ _id: device._id }, device);
+  }
 
-    static getAll(){
-        return Object.values(devicesDb);
-    }
+  static delete(id) {
+    return DeviceModel.deleteOne({ _id: id });
+  }
+
+  static getAll() {
+    return DeviceModel.find();
+  }
+
 }
 
 module.exports = Device;
