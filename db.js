@@ -6,7 +6,7 @@ const options = {
   useUnifiedTopology: true
 };
 
-mongoose.connect('mongodb://admin:admin12345@ds145848.mlab.com:45848/mongo', options);
+mongoose.connect('mongodb://root:mongo1234@ds145848.mlab.com:45848/mongo', options);
 
 const db = mongoose.connection;
 
