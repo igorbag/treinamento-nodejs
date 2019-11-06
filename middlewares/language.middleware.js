@@ -29,7 +29,7 @@ function getMessagesOf(messages) {
     return function getMessage(key) {
       return messages[key];
     };
-  }
+}
 
 function getLocalesByPriority(headerPropetyContent = '') {
     return headerPropetyContent.split(LOCALE_SEPARATOR)
@@ -46,4 +46,4 @@ function getLocalesByPriority(headerPropetyContent = '') {
       .sort((locale1, locale2) => {
         return locale1.quality <= locale2.quality;
       });
-  }
+}

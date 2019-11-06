@@ -28,7 +28,7 @@ route.get('/devices', async (req, res, next) => {
 route.post('/devices', async (req, res, next) => {
   try {
     await Device.create(req.body);
-    const responseBody = { message: req.getMessage("inserted-success") };
+    const responseBody = { message: 'Registro inserido com sucesso!' };
     res.status(HttpStatusCodes.CREATED).send(responseBody);
   } catch (error) {
     res.status(HttpStatusCodes.BAD_REQUEST).send(error);
@@ -39,7 +39,7 @@ route.put('/devices/:id', async (req, res, next) => {
   try {
     req.body._id = req.params.id;
     await Device.update(req.body);
-    const responseBody = { message: req.getMessage("updated-success") };
+    const responseBody = { message: 'Registro atualizado com sucesso!' };
     res.status(HttpStatusCodes.OK).send(responseBody);
   } catch (error) {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(error);
@@ -49,10 +49,24 @@ route.put('/devices/:id', async (req, res, next) => {
 route.delete('/devices/:id', async (req, res, next) => {
   try {
     await Device.delete(req.params.id);
-    const responseBody = { message: req.getMessage("deleted-success") };
+    const responseBody = { message: 'Registro removido com sucesso!' };
     res.status(HttpStatusCodes.OK).send(responseBody);
   } catch (error) {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+});
+
+route.post('/devices/:id/action', async (req, res, next) => {
+  try {
+    const device = await Device.getById(req.params.id);
+    if (!device) {
+      res.sendStatus(HttpStatusCodes.NOT_FOUND);
+    } else {
+      mqttClient.send(device.deviceid, req.body.value);
+      res.status(HttpStatusCodes.OK).send();
+    }
+  } catch (error) {
+    res.status(HttpStatusCodes.BAD_REQUEST).send(error);
   }
 });
 

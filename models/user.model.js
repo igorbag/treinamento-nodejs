@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, minlength: 4, maxlength: 15, unique: true },
-  password: { type: String, required: true, minlength: 6, maxlength: 15 }
-});
+const userSchema = require('../schemas/user.schema');
 
 const UserModel = mongoose.model('User', userSchema, 'users');
 
@@ -11,8 +7,16 @@ class User {
 
   static authenticate(username, password) {
     const query = { username, password };
-    return UserModel.findOne(query);
+    return UserModel.findOne(query).populate({
+      path: 'spots',
+      model: 'Spot',
+      populate: {
+        path: 'devices',
+        model: 'Device'
+      }
+    }).lean();
   }
 
 }
+
 module.exports = User;
